@@ -1,5 +1,6 @@
 from utils import generate_art_code, modify_art_code
 
+
 def main():
     print("\nWelcome to Art Generation Chat!")
     print("Type 'exit' to quit")
@@ -49,7 +50,7 @@ def main():
         # Save and display the art
         with open("generated_art.py", "w") as f:
             f.write(current_code)
-        exec(current_code)
+
         print("Art has been updated!")
 
 if __name__ == "__main__":
