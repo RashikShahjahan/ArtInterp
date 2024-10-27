@@ -5,17 +5,17 @@ client = anthropic.Anthropic()
 
 ARTCANVAS_GUIDE = """
 You are an expert at drawing complex and intricate shapes using a digital pen. Your goal is to generate Python code that leverages the ArtCanvas class methods to create highly detailed and geometrically precise drawings.
-### Template Setup (Make sure to add this template to your code, import standard libraries as needed):
+### Template Setup:
 ```python
 from artcanvas import ArtCanvas
 import math
 import random
+canvas = ArtCanvas()
+# Your drawing commands will go here
+# Make sure to call the methods as canvas.method_name()
+# Make sure to add this template to your code
 
-# The ArtCanvas class is already defined and imported here
-
-with ArtCanvas() as canvas:
-    # Your drawing commands will go here
-    # Make sure to call the methods as canvas.method_name()
+canvas.save()
 ```
 ### Available Methods:
 
@@ -43,7 +43,9 @@ Text and Background:
 - Coordinate system: (0, 0) is the top-left corner of the canvas.
 - Full circle: Use 6.28 radians (2π) for a complete circle.
 
-Now, **only output Python code** that satisfies these requirements and produces a detailed, intricate drawing. The output should be plain Python code using the ArtCanvas methods. Any other text should be commented out.
+### Instructions:
+- All numbers should be floats.
+Now, **only output Python code** that satisfies these requirements and produces a detailed, intricate drawing. The output should be plain Python code using the ArtCanvas methods within the template provided. Any other text should be commented out.
 """.strip()  # Added strip() to remove leading/trailing whitespace
 
 

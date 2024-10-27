@@ -4,14 +4,11 @@ import cairo
 class ArtCanvas:
     def __init__(self, width=1920, height=1200, filename="output.png"):
         # Initialize canvas
-        self.surface = None
-        self.ctx = None
         self.width = width
         self.height = height
         self.filename = filename
-
-    def __enter__(self):
-        # Initialize canvas when entering context
+        
+        # Initialize surface and context (moved from __enter__)
         self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, self.width, self.height)
         self.ctx = cairo.Context(self.surface)
         
@@ -21,6 +18,7 @@ class ArtCanvas:
         self.ctx.set_line_width(1)
         self.ctx.set_source_rgb(0, 0, 0)
 
+    def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -130,4 +128,8 @@ class ArtCanvas:
         else:
             self.ctx.stroke()
 
- 
+    def save(self):
+        """Save the image to file and cleanup"""
+        if self.surface:
+            self.surface.write_to_png(self.filename)
+            self.surface.finish()
