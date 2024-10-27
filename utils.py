@@ -15,6 +15,7 @@ import random
 
 with ArtCanvas() as canvas:
     # Your drawing commands will go here
+    # Make sure to call the methods as canvas.method_name()
 ```
 ### Available Methods:
 

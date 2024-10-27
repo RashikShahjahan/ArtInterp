@@ -14,5 +14,4 @@ __pycache__/
 *.docx
 *.png
 
-.output.png
-generated_art.py
+
