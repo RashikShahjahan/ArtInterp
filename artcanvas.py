@@ -80,5 +80,54 @@ class ArtCanvas:
         self.ctx.paint()
         self.ctx.set_source_rgb(0, 0, 0)  # Reset to black
 
+    def draw_polygon(self, points, fill=False):
+        """Draw a polygon from a list of (x,y) points"""
+        if not points or len(points) < 3:
+            return
+        self.ctx.move_to(*points[0])
+        for x, y in points[1:]:
+            self.ctx.line_to(x, y)
+        self.ctx.close_path()
+        if fill:
+            self.ctx.fill()
+        else:
+            self.ctx.stroke()
+
+    def draw_bezier_curve(self, x1, y1, cx1, cy1, cx2, cy2, x2, y2):
+        """Draw a cubic bezier curve from (x1,y1) to (x2,y2) with control points (cx1,cy1) and (cx2,cy2)"""
+        self.ctx.move_to(x1, y1)
+        self.ctx.curve_to(cx1, cy1, cx2, cy2, x2, y2)
+        self.ctx.stroke()
+
+    def set_gradient(self, x1, y1, x2, y2, stops):
+        """Create a linear gradient. stops should be a list of (offset, r, g, b, a) tuples"""
+        gradient = cairo.LinearGradient(x1, y1, x2, y2)
+        for offset, r, g, b, a in stops:
+            gradient.add_color_stop_rgba(offset, r, g, b, a)
+        self.ctx.set_source(gradient)
+
+    def set_radial_gradient(self, cx1, cy1, radius1, cx2, cy2, radius2, stops):
+        """Create a radial gradient. stops should be a list of (offset, r, g, b, a) tuples"""
+        gradient = cairo.RadialGradient(cx1, cy1, radius1, cx2, cy2, radius2)
+        for offset, r, g, b, a in stops:
+            gradient.add_color_stop_rgba(offset, r, g, b, a)
+        self.ctx.set_source(gradient)
+
+    def set_dash_pattern(self, dashes, offset=0):
+        """Set a dash pattern for lines. dashes is a list of dash lengths"""
+        self.ctx.set_dash(dashes, offset)
+
+    def draw_rounded_rectangle(self, x, y, width, height, radius, fill=False):
+        """Draw a rectangle with rounded corners"""
+        self.ctx.new_path()
+        self.ctx.arc(x + radius, y + radius, radius, math.pi, 3 * math.pi / 2)
+        self.ctx.arc(x + width - radius, y + radius, radius, 3 * math.pi / 2, 0)
+        self.ctx.arc(x + width - radius, y + height - radius, radius, 0, math.pi / 2)
+        self.ctx.arc(x + radius, y + height - radius, radius, math.pi / 2, math.pi)
+        self.ctx.close_path()
+        if fill:
+            self.ctx.fill()
+        else:
+            self.ctx.stroke()
 
  
