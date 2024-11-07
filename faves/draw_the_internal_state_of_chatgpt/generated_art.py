@@ -1,5 +1,4 @@
 from artcanvas import ArtCanvas
-import math
 import random
 with ArtCanvas() as canvas:
     # Background
