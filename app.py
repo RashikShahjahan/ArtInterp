@@ -1,9 +1,13 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from utils import generate_art_code, modify_art_code
 import uvicorn
+import os
+import subprocess
+import time
 
 app = FastAPI()
 security = HTTPBearer()
@@ -50,8 +54,41 @@ async def run_code(
     request: RunCodeRequest,
     token: str = Depends(verify_token)
 ):
-    exec(request.code)
-    return {"output": "output.png"}
+    try:
+        # Write the code to a file
+        code_file_path = "generated_art_script.py"
+        with open(code_file_path, 'w') as file:
+            file.write(request.code)
+        
+        # Run the code in a separate process
+        result = subprocess.run(['python', code_file_path], 
+                              capture_output=True, 
+                              text=True, 
+                              timeout=30)  # 30 second timeout
+        
+        # Clean up the file
+        os.remove(code_file_path)
+        
+        if result.returncode != 0:
+            raise Exception(f"Code execution failed:\n{result.stderr}")
+            
+        print("Code executed successfully")
+        
+        # Check if the file exists
+        output_path = "output.png"
+        if not os.path.exists(output_path):
+            raise HTTPException(status_code=404, detail="Image was not generated")
+            
+        # Return the actual image file
+        timestamp = int(time.time())
+        filename = f"generated_art_{timestamp}.png"
+        return FileResponse(
+            output_path,
+            media_type="image/png",
+            filename=filename
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
         
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
