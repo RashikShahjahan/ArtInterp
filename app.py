@@ -6,8 +6,8 @@ from pydantic import BaseModel
 from utils import generate_art_code, modify_art_code
 import uvicorn
 import os
-import tempfile
 import subprocess
+import time
 
 app = FastAPI()
 security = HTTPBearer()
@@ -80,10 +80,12 @@ async def run_code(
             raise HTTPException(status_code=404, detail="Image was not generated")
             
         # Return the actual image file
+        timestamp = int(time.time())
+        filename = f"generated_art_{timestamp}.png"
         return FileResponse(
             output_path,
             media_type="image/png",
-            filename="generated_art.png"
+            filename=filename
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
